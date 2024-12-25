@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CloudCast TV</title>
+  
+  <!-- 引用 Favicon -->
+  <link rel="icon" href="favicon/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="favicon/favicon-16x16.png" sizes="16x16" type="image/png" />
+  <link rel="icon" href="favicon/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180" />
+  
+  <!-- Video.js 样式 -->
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.min.css" rel="stylesheet" />
+  <!-- Video.js 脚本 -->
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js" defer></script>
+
+  <!-- 字体 -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- 引入独立的样式文件 -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <!-- 添加 Logo 图片 -->
+      <img src="images/logo.png" alt="CloudCast TV Logo" class="logo" />
+      
+      <!-- 将 Logo 和标题包裹在一个新的容器中，以便更好地控制布局 -->
+      <div class="header-title">
+        <h1>CloudCast TV</h1>
+      </div>
+      
+      <div class="header-controls">
+        <!-- 播放列表选择下拉菜单 -->
+        <label for="playlist-select" class="visually-hidden">选择播放列表</label>
+        <select id="playlist-select" aria-label="选择播放列表">
+          <!-- 原有的 <option> 标签已移除，播放列表选项将通过 JavaScript 动态生成 -->
+        </select>
+        <button id="theme-toggle" aria-label="切换主题">🌙</button>
+        <button id="toggle-channel-list" aria-label="收起频道列表" class="toggle-button">✖️</button>
+        <button id="settings-button" aria-label="设置" class="toggle-button">⚙️</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="content">
+      <!-- 频道列表容器 -->
+      <nav id="channel-list-container" aria-label="频道列表">
+        <!-- 频道列表选项卡 -->
+        <div id="channel-tabs">
+          <button id="all-channels-tab" class="tab active" aria-label="显示所有频道">所有频道</button>
+          <button id="favorite-channels-tab" class="tab" aria-label="显示收藏频道">收藏频道</button>
+        </div>
+        <!-- 搜索栏 -->
+        <div id="channel-search">
+          <label for="search-input" class="visually-hidden">搜索频道</label>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="搜索频道..."
+            aria-label="搜索频道"
+          />
+        </div>
+        <!-- 频道列表 -->
+        <ul id="channel-list" role="list"></ul>
+      </nav>
+
+      <!-- 播放器区域 -->
+      <section id="player-container">
+        <div id="video-wrapper">
+          <video-js
+            id="my-video"
+            class="video-js vjs-big-play-centered"
+            controls
+            preload="auto"
+            autoplay
+            muted
+            data-setup='{"techOrder": ["html5"]}'
+          >
+            <p class="vjs-no-js">
+              要查看此视频，请启用 JavaScript，并考虑升级到支持 HTML5 视频的浏览器
+              <a
+                href="https://videojs.com/html5-video-support/"
+                target="_blank"
+                >支持HTML5视频</a
+              >
+            </p>
+          </video-js>
+          <!-- 加载指示器 -->
+          <div id="loading-indicator" aria-hidden="true">
+            <div class="spinner" role="status" aria-label="加载中"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 移动端的上下切换频道按钮 -->
+    <div id="controls">
+      <button id="prev-channel" aria-label="上一个频道">上一个频道</button>
+      <button id="next-channel" aria-label="下一个频道">下一个频道</button>
+    </div>
+
+    <!-- 键盘操作提示 -->
+    <div id="keyboard-info">
+      使用键盘上下方向键可以切换频道，空格键暂停/播放视频
+    </div>
+  </main>
+
+  <!-- 设置模态窗口 -->
+  <div id="settings-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="settings-title">
+    <div class="modal-content">
+      <h2 id="settings-title">设置</h2>
+      <button id="close-settings" aria-label="关闭设置">&times;</button>
+      <div class="modal-body">
+        <button id="clear-cache" class="settings-button">清理缓存</button>
+        
+        <!-- 新增：自定义直播源输入区域 -->
+        <div id="custom-playlist-container">
+          <h3>添加自定义直播源</h3>
+          <label for="custom-playlist-name">名称</label>
+          <input type="text" id="custom-playlist-name" placeholder="自定义源名称" />
+
+          <label for="custom-playlist-url">链接</label>
+          <input type="text" id="custom-playlist-url" placeholder="完整的 m3u 或 m3u8 链接" />
+
+          <button id="add-custom-playlist" class="settings-button">
+            添加
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 引入独立的 JavaScript 文件 -->
+  <script src="script.js" defer></script>
+</body>
+</html>

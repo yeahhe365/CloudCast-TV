@@ -1,0 +1,591 @@
+:root {
+	--primary-color: #2c3e50;
+	--secondary-color: #34495e;
+	--accent-color: #3498db;
+	--background-color: #ecf0f1;
+	--text-color: #2c3e50;
+	--hover-color: #e74c3c;
+	--error-color: #e74c3c;
+	--error-background: rgba(231, 76, 60, 0.1);
+}
+
+/* 暗色主题变量 */
+:root.dark {
+	--primary-color: #1e272e;
+	--secondary-color: #485460;
+	--accent-color: #e84118;
+	--background-color: #0f0f0f;
+	--text-color: #d2dae2;
+	--hover-color: #c23616;
+	--error-color: #e74c3c;
+	--error-background: rgba(231, 76, 60, 0.1);
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: "Noto Sans SC", sans-serif;
+	background-color: var(--background-color);
+	color: var(--text-color);
+	line-height: 1.6;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 20px;
+	position: relative; /* 为错误消息定位提供参考 */
+}
+
+header {
+	background-color: var(--primary-color);
+	color: white;
+	padding: 13px 40px; /* 缩小顶部栏上下内边距 */
+	margin-bottom: 10px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start; /* 从 space-between 改为 flex-start */
+	flex-wrap: wrap;
+}
+
+.header-title {
+	display: flex;
+	align-items: center;
+	margin-left: 10px;
+}
+
+.header-title h1 {
+	font-size: 2em; /* 缩小字体大小以适应缩小的顶部栏 */
+	font-weight: 700;
+	letter-spacing: 2px;
+	margin-left: 0; /* 移除 margin-left */
+}
+
+.header-controls {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-left: auto; /* 将控制按钮推到右侧 */
+}
+
+#theme-toggle {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 1.5em;
+	cursor: pointer;
+	outline: none;
+	transition: transform 0.3s;
+}
+#theme-toggle:hover {
+	transform: rotate(20deg);
+}
+
+.toggle-button {
+	background: none;
+	border: none;
+	color: var(--accent-color);
+	font-size: 1.8em;
+	cursor: pointer;
+	outline: none;
+	transition: transform 0.3s;
+}
+.toggle-button:hover {
+	transform: rotate(20deg);
+}
+
+/* 播放列表选择下拉菜单 */
+#playlist-select {
+	padding: 5px 10px;
+	border-radius: 5px;
+	border: 1px solid white;
+	background-color: var(--secondary-color);
+	color: white;
+	font-size: 1em;
+	cursor: pointer;
+	outline: none;
+	transition: background-color 0.3s;
+}
+#playlist-select:hover,
+#playlist-select:focus {
+	background-color: var(--accent-color);
+}
+
+/* 隐藏的标签 */
+.visually-hidden {
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* 内容区域 */
+.content {
+	display: flex;
+	gap: 30px;
+	background-color: var(--background-color);
+	border-radius: 15px;
+	overflow: hidden;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+	transition: background-color 0.3s, color 0.3s;
+	flex-direction: row;
+	position: relative; /* For toggle button positioning */
+}
+
+/* 频道列表容器 */
+#channel-list-container {
+	flex: 0 0 300px;
+	max-height: 80vh; 
+	overflow-y: auto;
+	background-color: var(--secondary-color);
+	padding: 20px;
+	scrollbar-width: thin;
+	scrollbar-color: var(--accent-color) var(--secondary-color);
+	display: flex;
+	flex-direction: column;
+	transition: all 0.3s ease;
+	order: 1; /* 默认在大屏幕时，频道列表在左侧 */
+}
+
+/* 频道列表选项卡 */
+#channel-tabs {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 15px;
+}
+
+.tab {
+	padding: 8px 12px;
+	background-color: var(--secondary-color);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	font-size: 0.9em;
+}
+.tab.active,
+.tab:hover {
+	background-color: var(--accent-color);
+}
+
+/* 频道列表折叠时的样式 */
+#channel-list-container.collapsed {
+	flex: 0 0 0;
+	padding: 0;
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* 自定义滚动条 */
+#channel-list-container::-webkit-scrollbar {
+	width: 8px;
+}
+#channel-list-container::-webkit-scrollbar-track {
+	background: var(--secondary-color);
+}
+#channel-list-container::-webkit-scrollbar-thumb {
+	background-color: var(--accent-color);
+	border-radius: 20px;
+}
+
+/* 搜索栏 */
+#channel-search {
+	margin-bottom: 15px;
+}
+#search-input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--primary-color);
+	border-radius: 5px;
+	font-size: 1em;
+	outline: none;
+	transition: border-color 0.3s;
+}
+#search-input:focus {
+	border-color: var(--accent-color);
+}
+
+/* 频道列表 */
+#channel-list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	scroll-behavior: smooth;
+}
+
+/* 频道项 */
+.channel-item {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+/* 频道按钮 */
+.channel-button {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 10px;
+	border: none;
+	background-color: transparent;
+	color: white;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.3s ease;
+	border-radius: 8px;
+	position: relative;
+	outline: none;
+}
+.channel-button:hover,
+.channel-button.active {
+	background-color: var(--accent-color);
+	transform: translateX(5px);
+}
+
+/* 频道图标 */
+.channel-icon {
+	width: 40px;
+	height: 40px;
+	margin-right: 15px;
+	object-fit: contain;
+	border-radius: 50%;
+	background-color: white;
+	padding: 5px;
+	transition: transform 0.3s ease;
+	flex-shrink: 0;
+}
+.channel-button:hover .channel-icon {
+	transform: scale(1.1);
+}
+
+/* 频道信息 */
+.channel-info {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	overflow: hidden;
+}
+.channel-name {
+	font-weight: bold;
+	margin-bottom: 5px;
+	font-size: 1em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.channel-description {
+	font-size: 0.8em;
+	opacity: 0.8;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* 收藏图标 */
+.favorite-icon {
+	margin-left: auto;
+	cursor: pointer;
+	font-size: 2em; 
+	color: gold;
+	transition: color 0.3s;
+	user-select: none;
+}
+.favorite-icon.active {
+	color: orange;
+}
+.favorite-icon:focus {
+	outline: 2px solid var(--accent-color);
+}
+
+/* 播放器容器 */
+#player-container {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	position: relative;
+	background-color: var(--background-color);
+	transition: background-color 0.3s, color 0.3s;
+	order: 0; /* 默认在大屏幕时，播放器在右侧 */
+}
+
+/* 视频包装器 */
+#video-wrapper {
+	width: 100%;
+	max-width: 1080px;
+	position: relative;
+	padding-top: 56.25%; /* 16:9 */
+}
+
+/* Video.js 播放器样式 */
+.video-js {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 控制按钮（在小屏幕上显示） */
+#controls {
+	display: none;
+	justify-content: center;
+	gap: 20px;
+	margin-top: 20px;
+}
+#controls button {
+	padding: 10px 20px;
+	font-size: 1em;
+	background-color: var(--accent-color);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	outline: none;
+}
+#controls button:hover,
+#controls button:focus {
+	background-color: var(--hover-color);
+}
+
+/* 键盘提示 */
+#keyboard-info {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--text-color);
+	font-size: 0.9em;
+	background-color: rgba(255, 255, 255, 0.8);
+	padding: 10px;
+	border-radius: 5px;
+}
+
+/* 加载指示器 */
+#loading-indicator {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: none;
+	z-index: 10;
+}
+#loading-indicator.active {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 10px;
+	padding: 20px;
+}
+.spinner {
+	border: 8px solid #f3f3f3;
+	border-top: 8px solid var(--accent-color);
+	border-radius: 50%;
+	width: 60px;
+	height: 60px;
+	animation: spin 1s linear infinite;
+}
+@keyframes spin {
+	0% {
+	  transform: rotate(0deg);
+	}
+	100% {
+	  transform: rotate(360deg);
+	}
+}
+
+/* 无障碍聚焦样式 */
+.channel-button:focus,
+#controls button:focus,
+#theme-toggle:focus,
+#toggle-channel-list:focus,
+.favorite-icon:focus,
+#playlist-select:focus,
+#search-input:focus,
+#settings-button:focus,
+#channel-tabs .tab:focus,
+#clear-cache:focus {
+	outline: 2px solid var(--accent-color);
+	outline-offset: 2px;
+}
+
+/* ======== 设置模态窗口 ======== */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed;
+	z-index: 30;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal.active {
+	display: block;
+}
+.modal-content {
+	background-color: var(--background-color);
+	margin: 10% auto; /* 10% from the top and centered */
+	padding: 20px;
+	border: 1px solid var(--secondary-color);
+	width: 80%;
+	max-width: 400px;
+	border-radius: 10px;
+	position: relative;
+	color: var(--text-color);
+}
+#close-settings {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	background: none;
+	border: none;
+	font-size: 1.5em;
+	cursor: pointer;
+	color: var(--text-color);
+}
+.modal-body {
+	margin-top: 20px;
+}
+.settings-button {
+	padding: 10px 20px;
+	font-size: 1em;
+	background-color: var(--accent-color);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	outline: none;
+	margin-bottom: 10px; /* 微调间距 */
+}
+.settings-button:hover,
+.settings-button:focus {
+	background-color: var(--hover-color);
+}
+
+/* 新增：自定义直播源输入容器简单样式 */
+#custom-playlist-container {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+#custom-playlist-container label {
+	font-size: 0.9em;
+}
+#custom-playlist-container input {
+	padding: 8px;
+	border: 1px solid var(--primary-color);
+	border-radius: 5px;
+	outline: none;
+	transition: border-color 0.3s;
+}
+#custom-playlist-container input:focus {
+	border-color: var(--accent-color);
+}
+
+/* ======== 小屏幕布局: 频道列表放到播放器下方 ======== */
+@media (max-width: 968px) {
+	.content {
+		flex-direction: column;
+	}
+	#player-container {
+		order: 1;  /* 播放器在上方 */
+	}
+	#channel-list-container {
+		order: 2;  /* 频道列表在下方 */
+		max-height: 40vh; /* 适当缩小频道列表高度，防止过高 */
+	}
+	#controls {
+		display: flex;
+	}
+	#keyboard-info {
+		display: none;
+	}
+	.header-content {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+	}
+	
+	/* 调整频道列表折叠按钮的位置 */
+	.toggle-button {
+		order: 3;
+	}
+}
+
+/* ======== 超小屏幕优化 ======== */
+@media (max-width: 600px) {
+	h1 {
+		font-size: 1.8em;
+		text-align: center;
+	}
+	#channel-list-container {
+		flex: 0 0 100%;
+	}
+	#playlist-select {
+		width: 100%;
+	}
+	.header-controls {
+		width: 100%;
+		justify-content: space-between;
+	}
+	.channel-button {
+		padding: 8px;
+	}
+	.channel-icon {
+		width: 30px;
+		height: 30px;
+		margin-right: 10px;
+	}
+	.favorite-icon {
+		font-size: 3em; /* 保持放大后的尺寸 */
+	}
+	#controls button {
+		padding: 8px 16px;
+		font-size: 0.9em;
+	}
+	.spinner {
+		width: 40px;
+		height: 40px;
+		border-width: 6px;
+	}
+	.modal-content {
+		width: 90%;
+		margin: 20% auto;
+	}
+	
+	/* 新增：Logo在超小屏幕上的样式调整 */
+	.logo {
+		height: 40px; /* 在超小屏幕上缩小 Logo */
+		/* Removed margin-right */
+	}
+}
+
+/* ======== Logo 样式 ======== */
+.logo {
+	height: 50px; 
+	/* Removed margin-right: 15px; */
+}
