@@ -14,15 +14,13 @@
   
   <!-- Video.js 样式 -->
   <link href="https://vjs.zencdn.net/7.20.3/video-js.min.css" rel="stylesheet" />
-  <!-- Video.js 脚本 -->
-  <script src="https://vjs.zencdn.net/7.20.3/video.min.js" defer></script>
-
+  
   <!-- 字体 -->
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap"
     rel="stylesheet"
   />
-
+  
   <!-- 引入独立的样式文件 -->
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -30,7 +28,7 @@
   <header>
     <div class="header-content">
       <!-- 添加 Logo 图片 -->
-      <img src="images/logo.png" alt="CloudCast TV Logo" class="logo" />
+      <img src="images/logo.png" alt="CloudCast TV Logo" class="logo" loading="lazy" />
       
       <!-- 将 Logo 和标题包裹在一个新的容器中，以便更好地控制布局 -->
       <div class="header-title">
@@ -81,7 +79,6 @@
             class="video-js vjs-big-play-centered"
             controls
             preload="auto"
-            autoplay
             muted
             data-setup='{"techOrder": ["html5"]}'
           >
@@ -127,10 +124,10 @@
           <h3>添加自定义直播源</h3>
           <label for="custom-playlist-name">名称</label>
           <input type="text" id="custom-playlist-name" placeholder="自定义源名称" />
-
+  
           <label for="custom-playlist-url">链接</label>
-          <input type="text" id="custom-playlist-url" placeholder="完整的 m3u 或 m3u8 链接" />
-
+          <input type="url" id="custom-playlist-url" placeholder="完整的 m3u 或 m3u8 链接" />
+  
           <button id="add-custom-playlist" class="settings-button">
             添加
           </button>
@@ -139,6 +136,8 @@
     </div>
   </div>
 
+  <!-- 引入 Video.js 脚本 -->
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js" defer></script>
   <!-- 引入独立的 JavaScript 文件 -->
   <script src="script.js" defer></script>
 </body>

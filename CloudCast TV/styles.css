@@ -7,6 +7,7 @@
 	--hover-color: #e74c3c;
 	--error-color: #e74c3c;
 	--error-background: rgba(231, 76, 60, 0.1);
+	--transition-duration: 0.3s;
 }
 
 /* 暗色主题变量 */
@@ -32,7 +33,7 @@ body {
 	background-color: var(--background-color);
 	color: var(--text-color);
 	line-height: 1.6;
-	transition: background-color 0.3s, color 0.3s;
+	transition: background-color var(--transition-duration), color var(--transition-duration);
 }
 
 .container {
@@ -45,7 +46,7 @@ body {
 header {
 	background-color: var(--primary-color);
 	color: white;
-	padding: 13px 40px; /* 缩小顶部栏上下内边距 */
+	padding: 10px 20px; /* 缩小顶部栏上下内边距 */
 	margin-bottom: 10px;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -53,7 +54,7 @@ header {
 .header-content {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start; /* 从 space-between 改为 flex-start */
+	justify-content: space-between; /* 保持在一行 */
 	flex-wrap: wrap;
 }
 
@@ -64,7 +65,7 @@ header {
 }
 
 .header-title h1 {
-	font-size: 2em; /* 缩小字体大小以适应缩小的顶部栏 */
+	font-size: 1.8em; /* 缩小字体大小以适应缩小的顶部栏 */
 	font-weight: 700;
 	letter-spacing: 2px;
 	margin-left: 0; /* 移除 margin-left */
@@ -73,7 +74,7 @@ header {
 .header-controls {
 	display: flex;
 	align-items: center;
-	gap: 15px;
+	gap: 10px;
 	margin-left: auto; /* 将控制按钮推到右侧 */
 }
 
@@ -84,8 +85,9 @@ header {
 	font-size: 1.5em;
 	cursor: pointer;
 	outline: none;
-	transition: transform 0.3s;
+	transition: transform var(--transition-duration);
 }
+
 #theme-toggle:hover {
 	transform: rotate(20deg);
 }
@@ -94,11 +96,12 @@ header {
 	background: none;
 	border: none;
 	color: var(--accent-color);
-	font-size: 1.8em;
+	font-size: 1.5em;
 	cursor: pointer;
 	outline: none;
-	transition: transform 0.3s;
+	transition: transform var(--transition-duration);
 }
+
 .toggle-button:hover {
 	transform: rotate(20deg);
 }
@@ -113,8 +116,9 @@ header {
 	font-size: 1em;
 	cursor: pointer;
 	outline: none;
-	transition: background-color 0.3s;
+	transition: background-color var(--transition-duration);
 }
+
 #playlist-select:hover,
 #playlist-select:focus {
 	background-color: var(--accent-color);
@@ -133,12 +137,12 @@ header {
 /* 内容区域 */
 .content {
 	display: flex;
-	gap: 30px;
+	gap: 20px;
 	background-color: var(--background-color);
 	border-radius: 15px;
 	overflow: hidden;
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-	transition: background-color 0.3s, color 0.3s;
+	transition: background-color var(--transition-duration), color var(--transition-duration);
 	flex-direction: row;
 	position: relative; /* For toggle button positioning */
 }
@@ -154,7 +158,7 @@ header {
 	scrollbar-color: var(--accent-color) var(--secondary-color);
 	display: flex;
 	flex-direction: column;
-	transition: all 0.3s ease;
+	transition: all var(--transition-duration) ease;
 	order: 1; /* 默认在大屏幕时，频道列表在左侧 */
 }
 
@@ -172,9 +176,12 @@ header {
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: background-color 0.3s;
+	transition: background-color var(--transition-duration);
 	font-size: 0.9em;
+	flex: 1;
+	text-align: center;
 }
+
 .tab.active,
 .tab:hover {
 	background-color: var(--accent-color);
@@ -194,9 +201,11 @@ header {
 #channel-list-container::-webkit-scrollbar {
 	width: 8px;
 }
+
 #channel-list-container::-webkit-scrollbar-track {
 	background: var(--secondary-color);
 }
+
 #channel-list-container::-webkit-scrollbar-thumb {
 	background-color: var(--accent-color);
 	border-radius: 20px;
@@ -206,6 +215,7 @@ header {
 #channel-search {
 	margin-bottom: 15px;
 }
+
 #search-input {
 	width: 100%;
 	padding: 10px;
@@ -213,8 +223,9 @@ header {
 	border-radius: 5px;
 	font-size: 1em;
 	outline: none;
-	transition: border-color 0.3s;
+	transition: border-color var(--transition-duration);
 }
+
 #search-input:focus {
 	border-color: var(--accent-color);
 }
@@ -246,11 +257,12 @@ header {
 	color: white;
 	text-align: left;
 	cursor: pointer;
-	transition: background-color 0.3s ease, transform 0.3s ease;
+	transition: background-color var(--transition-duration) ease, transform var(--transition-duration) ease;
 	border-radius: 8px;
 	position: relative;
 	outline: none;
 }
+
 .channel-button:hover,
 .channel-button.active {
 	background-color: var(--accent-color);
@@ -266,9 +278,10 @@ header {
 	border-radius: 50%;
 	background-color: white;
 	padding: 5px;
-	transition: transform 0.3s ease;
+	transition: transform var(--transition-duration) ease;
 	flex-shrink: 0;
 }
+
 .channel-button:hover .channel-icon {
 	transform: scale(1.1);
 }
@@ -280,6 +293,7 @@ header {
 	flex-grow: 1;
 	overflow: hidden;
 }
+
 .channel-name {
 	font-weight: bold;
 	margin-bottom: 5px;
@@ -288,6 +302,7 @@ header {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
 .channel-description {
 	font-size: 0.8em;
 	opacity: 0.8;
@@ -300,14 +315,16 @@ header {
 .favorite-icon {
 	margin-left: auto;
 	cursor: pointer;
-	font-size: 2em; 
+	font-size: 1.5em; 
 	color: gold;
-	transition: color 0.3s;
+	transition: color var(--transition-duration);
 	user-select: none;
 }
+
 .favorite-icon.active {
 	color: orange;
 }
+
 .favorite-icon:focus {
 	outline: 2px solid var(--accent-color);
 }
@@ -322,7 +339,7 @@ header {
 	padding: 20px;
 	position: relative;
 	background-color: var(--background-color);
-	transition: background-color 0.3s, color 0.3s;
+	transition: background-color var(--transition-duration), color var(--transition-duration);
 	order: 0; /* 默认在大屏幕时，播放器在右侧 */
 }
 
@@ -353,6 +370,7 @@ header {
 	gap: 20px;
 	margin-top: 20px;
 }
+
 #controls button {
 	padding: 10px 20px;
 	font-size: 1em;
@@ -361,9 +379,10 @@ header {
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: background-color 0.3s ease;
+	transition: background-color var(--transition-duration) ease;
 	outline: none;
 }
+
 #controls button:hover,
 #controls button:focus {
 	background-color: var(--hover-color);
@@ -389,6 +408,7 @@ header {
 	display: none;
 	z-index: 10;
 }
+
 #loading-indicator.active {
 	display: flex;
 	justify-content: center;
@@ -397,6 +417,7 @@ header {
 	border-radius: 10px;
 	padding: 20px;
 }
+
 .spinner {
 	border: 8px solid #f3f3f3;
 	border-top: 8px solid var(--accent-color);
@@ -405,6 +426,7 @@ header {
 	height: 60px;
 	animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
 	0% {
 	  transform: rotate(0deg);
@@ -441,20 +463,24 @@ header {
 	overflow: auto;
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+
 .modal.active {
 	display: block;
 }
+
 .modal-content {
 	background-color: var(--background-color);
-	margin: 10% auto; /* 10% from the top and centered */
+	margin: 5% auto; /* 5% from the top and centered */
 	padding: 20px;
 	border: 1px solid var(--secondary-color);
-	width: 80%;
+	width: 90%;
 	max-width: 400px;
 	border-radius: 10px;
 	position: relative;
 	color: var(--text-color);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 #close-settings {
 	position: absolute;
 	top: 10px;
@@ -465,9 +491,11 @@ header {
 	cursor: pointer;
 	color: var(--text-color);
 }
+
 .modal-body {
 	margin-top: 20px;
 }
+
 .settings-button {
 	padding: 10px 20px;
 	font-size: 1em;
@@ -476,10 +504,11 @@ header {
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: background-color 0.3s ease;
+	transition: background-color var(--transition-duration) ease;
 	outline: none;
 	margin-bottom: 10px; /* 微调间距 */
 }
+
 .settings-button:hover,
 .settings-button:focus {
 	background-color: var(--hover-color);
@@ -492,16 +521,19 @@ header {
 	flex-direction: column;
 	gap: 10px;
 }
+
 #custom-playlist-container label {
 	font-size: 0.9em;
 }
+
 #custom-playlist-container input {
 	padding: 8px;
 	border: 1px solid var(--primary-color);
 	border-radius: 5px;
 	outline: none;
-	transition: border-color 0.3s;
+	transition: border-color var(--transition-duration);
 }
+
 #custom-playlist-container input:focus {
 	border-color: var(--accent-color);
 }
@@ -513,6 +545,11 @@ header {
 	}
 	#player-container {
 		order: 1;  /* 播放器在上方 */
+		padding: 10px; /* 减少内边距以增加视频区域空间 */
+	}
+	#video-wrapper {
+		padding-top: 56.25%; /* 保持 16:9 */
+		max-width: 100%; /* 允许全宽 */
 	}
 	#channel-list-container {
 		order: 2;  /* 频道列表在下方 */
@@ -524,9 +561,11 @@ header {
 	#keyboard-info {
 		display: none;
 	}
+	/* 保持 header-content 为 row */
 	.header-content {
-		flex-direction: column;
-		align-items: flex-start;
+		/* 确保 flex-direction 为 row */
+		flex-direction: row;
+		align-items: center;
 		gap: 10px;
 	}
 	
@@ -539,7 +578,7 @@ header {
 /* ======== 超小屏幕优化 ======== */
 @media (max-width: 600px) {
 	h1 {
-		font-size: 1.8em;
+		font-size: 1.6em;
 		text-align: center;
 	}
 	#channel-list-container {
@@ -561,7 +600,7 @@ header {
 		margin-right: 10px;
 	}
 	.favorite-icon {
-		font-size: 3em; /* 保持放大后的尺寸 */
+		font-size: 1.5em; /* 保持适中的尺寸 */
 	}
 	#controls button {
 		padding: 8px 16px;
@@ -573,19 +612,28 @@ header {
 		border-width: 6px;
 	}
 	.modal-content {
-		width: 90%;
-		margin: 20% auto;
+		width: 95%;
+		margin: 15% auto;
 	}
 	
 	/* 新增：Logo在超小屏幕上的样式调整 */
 	.logo {
 		height: 40px; /* 在超小屏幕上缩小 Logo */
-		/* Removed margin-right */
+	}
+	
+	/* 视频区域调整为全宽 */
+	#player-container {
+		padding: 5px; /* 进一步减少内边距 */
+	}
+	
+	#video-wrapper {
+		padding-top: 56.25%; /* 保持 16:9 */
+		max-width: 100%; /* 允许全宽 */
 	}
 }
 
 /* ======== Logo 样式 ======== */
 .logo {
 	height: 50px; 
-	/* Removed margin-right: 15px; */
+	transition: height var(--transition-duration);
 }

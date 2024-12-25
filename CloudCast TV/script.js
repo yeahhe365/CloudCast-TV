@@ -22,9 +22,6 @@
   const customPlaylistUrlInput = document.getElementById("custom-playlist-url");
   const addCustomPlaylistBtn = document.getElementById("add-custom-playlist");
 
-  // 定义 CORS 代理的基础 URL
-  const corsProxy = 'https://soft-disk-aaa8.mister-yeah-he.workers.dev/?url=';
-
   // 频道相关数据
   let channels = [];
   let currentChannelIndex = -1;
@@ -32,10 +29,10 @@
   let currentPlaylistUrl = ''; // 将在初始化时设置
   let isShowingFavorites = false; // 是否显示收藏频道
 
-  // 定义播放列表选项
+  // 定义播放列表选项（移除 CORS 代理）
   const playlistOptions = [
-    { name: '直播源1', url: corsProxy + encodeURIComponent('https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/cnTV_AutoUpdate.m3u8') },
-    { name: '直播源2', url: corsProxy + encodeURIComponent('https://ghgo.xyz/raw.githubusercontent.com/joevess/IPTV/main/home.m3u8') },
+    { name: '直播源1', url: 'https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/cnTV_AutoUpdate.m3u8' },
+    { name: '直播源2', url: 'https://ghgo.xyz/raw.githubusercontent.com/joevess/IPTV/main/home.m3u8' },
   ];
 
   // Video.js 播放器实例
@@ -418,6 +415,17 @@
   }
 
   /**
+   * 防抖函数
+   */
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
+  /**
    * 触摸滑动事件（左右切换频道）
    */
   function setupTouchEvents() {
@@ -481,9 +489,9 @@
    * 搜索功能
    */
   function setupSearchFunction() {
-    searchInput.addEventListener("input", function () {
+    searchInput.addEventListener("input", debounce(function () {
       filterChannels();
-    });
+    }, 300));
   }
 
   /**
