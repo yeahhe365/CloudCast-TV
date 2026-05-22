@@ -1,5 +1,9 @@
 # CloudCast TV
 
+<p align="center">
+  <a href="./README.md">中文</a> | <a href="./README.en.md">English</a>
+</p>
+
 > 一个简单、跨平台的 IPTV 在线播放网页。支持收藏频道、自定义直播源、主题切换等功能。
 
 ---
