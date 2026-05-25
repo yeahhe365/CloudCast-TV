@@ -132,6 +132,29 @@
             添加
           </button>
         </div>
+
+        <div id="playback-ua-container">
+          <h3>自定义播放 UA</h3>
+          <label for="playback-user-agent">User-Agent</label>
+          <textarea
+            id="playback-user-agent"
+            rows="3"
+            placeholder="例如：Mozilla/5.0 ... 或播放器要求的 UA"
+          ></textarea>
+          <label for="playback-proxy-template">播放代理模板（可选）</label>
+          <input
+            type="text"
+            id="playback-proxy-template"
+            placeholder="例如：http://localhost:8789/proxy?url={url}&ua={ua}"
+          />
+          <p class="settings-help">
+            浏览器会限制直接修改 User-Agent。需要完全生效时，请配置支持 {url} 和 {ua} 占位符的代理模板。
+          </p>
+          <button id="save-playback-user-agent" class="settings-button">
+            保存播放 UA 设置
+          </button>
+          <p id="playback-ua-status" class="settings-status" role="status" aria-live="polite"></p>
+        </div>
       </div>
     </div>
   </div>

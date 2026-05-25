@@ -230,6 +230,58 @@ header {
 	border-color: var(--accent-color);
 }
 
+#playback-ua-container {
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#playback-user-agent {
+	width: 100%;
+	min-height: 80px;
+	margin-top: 8px;
+	padding: 10px;
+	border: 1px solid var(--primary-color);
+	border-radius: 5px;
+	font: inherit;
+	resize: vertical;
+	outline: none;
+}
+
+#playback-proxy-template {
+	width: 100%;
+	margin-top: 8px;
+	padding: 10px;
+	border: 1px solid var(--primary-color);
+	border-radius: 5px;
+	font: inherit;
+	outline: none;
+}
+
+#playback-user-agent:focus {
+	border-color: var(--accent-color);
+}
+
+#playback-proxy-template:focus {
+	border-color: var(--accent-color);
+}
+
+.settings-help,
+.settings-status {
+	margin-top: 8px;
+	font-size: 0.9em;
+	line-height: 1.5;
+}
+
+.settings-help {
+	color: var(--secondary-color);
+}
+
+.settings-status {
+	min-height: 1.5em;
+	color: var(--accent-color);
+}
+
 /* 频道列表 */
 #channel-list {
 	list-style: none;

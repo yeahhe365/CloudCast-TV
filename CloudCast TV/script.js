@@ -16,6 +16,10 @@
   const settingsModal = document.getElementById("settings-modal");
   const closeSettingsBtn = document.getElementById("close-settings");
   const clearCacheBtn = document.getElementById("clear-cache");
+  const playbackUserAgentInput = document.getElementById("playback-user-agent");
+  const playbackProxyTemplateInput = document.getElementById("playback-proxy-template");
+  const savePlaybackUserAgentBtn = document.getElementById("save-playback-user-agent");
+  const playbackUaStatus = document.getElementById("playback-ua-status");
 
   // **新增：自定义直播源相关 DOM**
   const customPlaylistNameInput = document.getElementById("custom-playlist-name");
@@ -28,6 +32,10 @@
   let favorites = new Set();
   let currentPlaylistUrl = ''; // 将在初始化时设置
   let isShowingFavorites = false; // 是否显示收藏频道
+  let playbackUserAgent = "";
+  let playbackProxyTemplate = "";
+  const PLAYBACK_USER_AGENT_KEY = "playbackUserAgent";
+  const PLAYBACK_PROXY_TEMPLATE_KEY = "playbackProxyTemplate";
 
   // 定义播放列表选项（移除 CORS 代理）
   const playlistOptions = [
@@ -47,6 +55,81 @@
     controls: true,
     preload: "auto",
   });
+
+  function normalizePlaybackUserAgent(value) {
+    return String(value || "").replace(/\s+/g, " ").trim().slice(0, 512);
+  }
+
+  function normalizePlaybackProxyTemplate(value) {
+    return String(value || "").trim().slice(0, 1024);
+  }
+
+  function replaceTemplateToken(template, token, value) {
+    return template.split(token).join(value);
+  }
+
+  function initPlaybackUserAgent() {
+    playbackUserAgent = normalizePlaybackUserAgent(
+      localStorage.getItem(PLAYBACK_USER_AGENT_KEY)
+    );
+    playbackProxyTemplate = normalizePlaybackProxyTemplate(
+      localStorage.getItem(PLAYBACK_PROXY_TEMPLATE_KEY)
+    );
+    if (playbackUserAgentInput) {
+      playbackUserAgentInput.value = playbackUserAgent;
+    }
+    if (playbackProxyTemplateInput) {
+      playbackProxyTemplateInput.value = playbackProxyTemplate;
+    }
+    applyPlaybackUserAgent();
+  }
+
+  function createPlaybackRequestHook() {
+    return function beforeRequest(options) {
+      if (!playbackUserAgent) {
+        return options;
+      }
+
+      return {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          "User-Agent": playbackUserAgent,
+        },
+      };
+    };
+  }
+
+  function applyPlaybackUserAgent() {
+    const beforeRequest = createPlaybackRequestHook();
+
+    if (window.videojs?.Vhs?.xhr) {
+      window.videojs.Vhs.xhr.beforeRequest = beforeRequest;
+    }
+    if (window.videojs?.Hls?.xhr) {
+      window.videojs.Hls.xhr.beforeRequest = beforeRequest;
+    }
+
+    const tech = player.tech?.({ IWillNotUseThisInPlugins: true });
+    if (tech?.vhs?.xhr) {
+      tech.vhs.xhr.beforeRequest = beforeRequest;
+    }
+    if (tech?.hls?.xhr) {
+      tech.hls.xhr.beforeRequest = beforeRequest;
+    }
+  }
+
+  function resolvePlaybackUrl(streamUrl) {
+    if (!playbackUserAgent || !playbackProxyTemplate) {
+      return streamUrl;
+    }
+
+    return replaceTemplateToken(
+      replaceTemplateToken(playbackProxyTemplate, "{url}", encodeURIComponent(streamUrl)),
+      "{ua}",
+      encodeURIComponent(playbackUserAgent)
+    );
+  }
 
   /**
    * 初始化收藏频道
@@ -264,9 +347,10 @@
   /**
    * 播放指定频道
    */
-  function playChannel(index) {
+  function playChannel(index, options = {}) {
     if (index < 0 || index >= channels.length) return;
-    if (index === currentChannelIndex) {
+    const forceReload = options.forceReload === true;
+    if (index === currentChannelIndex && !forceReload) {
       // 正在播放当前频道，无需再次播放
       return;
     }
@@ -274,11 +358,12 @@
     currentChannelIndex = index;
     const channel = channels[index];
     showLoading(true);
+    applyPlaybackUserAgent();
 
     // 设置播放器源
     player.src({
       type: "application/x-mpegURL",
-      src: channel.url,
+      src: resolvePlaybackUrl(channel.url),
     });
 
     // 尝试播放
@@ -662,6 +747,15 @@
    */
   function setupSettings() {
     settingsButton.addEventListener("click", () => {
+      if (playbackUserAgentInput) {
+        playbackUserAgentInput.value = playbackUserAgent;
+      }
+      if (playbackProxyTemplateInput) {
+        playbackProxyTemplateInput.value = playbackProxyTemplate;
+      }
+      if (playbackUaStatus) {
+        playbackUaStatus.textContent = "";
+      }
       openSettingsModal();
     });
 
@@ -683,6 +777,48 @@
         location.reload();
       }
     });
+
+    if (
+      savePlaybackUserAgentBtn &&
+      playbackUserAgentInput &&
+      playbackProxyTemplateInput &&
+      playbackUaStatus
+    ) {
+      savePlaybackUserAgentBtn.addEventListener("click", () => {
+        playbackUserAgent = normalizePlaybackUserAgent(playbackUserAgentInput.value);
+        playbackProxyTemplate = normalizePlaybackProxyTemplate(
+          playbackProxyTemplateInput.value
+        );
+        if (playbackProxyTemplate && !playbackProxyTemplate.includes("{url}")) {
+          playbackUaStatus.textContent = "播放代理模板需要包含 {url} 占位符。";
+          return;
+        }
+        if (playbackUserAgent) {
+          localStorage.setItem(PLAYBACK_USER_AGENT_KEY, playbackUserAgent);
+        } else {
+          localStorage.removeItem(PLAYBACK_USER_AGENT_KEY);
+        }
+        if (playbackProxyTemplate) {
+          localStorage.setItem(PLAYBACK_PROXY_TEMPLATE_KEY, playbackProxyTemplate);
+        } else {
+          localStorage.removeItem(PLAYBACK_PROXY_TEMPLATE_KEY);
+        }
+        applyPlaybackUserAgent();
+
+        if (currentChannelIndex !== -1) {
+          playChannel(currentChannelIndex, { forceReload: true });
+        }
+
+        if (!playbackUserAgent) {
+          playbackUaStatus.textContent = "已清空自定义播放 UA。";
+        } else if (playbackProxyTemplate) {
+          playbackUaStatus.textContent = "播放 UA 与代理模板已保存，当前频道已重新加载。";
+        } else {
+          playbackUaStatus.textContent =
+            "播放 UA 已保存。浏览器可能拦截 User-Agent，建议配置播放代理模板。";
+        }
+      });
+    }
 
     // 添加自定义直播源事件
     addCustomPlaylistBtn.addEventListener("click", () => {
@@ -762,6 +898,7 @@
     setupThemeToggle();
     setupChannelListToggle();
     setupChannelTabs();
+    initPlaybackUserAgent();
     setupSettings();
     setupPlaylistSelect(); // 放在最后，确保都初始化后再去加载
 

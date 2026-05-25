@@ -14,6 +14,7 @@ A web-based TV and weather forecast application.
 
 - Web TV playback interface.
 - Weather forecast display.
+- Custom playback User-Agent with an optional proxy template for sources that require a specific UA.
 - Static frontend project that is easy to deploy.
 - Suitable for browser and large-screen scenarios.
 
@@ -26,6 +27,7 @@ A web-based TV and weather forecast application.
 ## Configuration
 
 - If external weather or media sources are used, configure them according to the endpoints in the source code.
+- Browsers cannot reliably override the native `User-Agent` header from client-side JavaScript. For full custom playback UA support, run `node server/playback-proxy.js` and set the playback proxy template to `http://localhost:8789/proxy?url={url}&ua={ua}` in settings.
 
 ## Tech Stack
 
